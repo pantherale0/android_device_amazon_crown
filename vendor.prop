@@ -13,6 +13,3 @@ ro.hardware.sensors=amazon
 
 # Wi-Fi
 wifi.interface=wlan0
-
-# Zram/Swap
-ro.zram.size_mb=512

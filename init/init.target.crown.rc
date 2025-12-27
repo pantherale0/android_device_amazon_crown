@@ -28,6 +28,15 @@ on boot
     chown bluetooth net_bt /dev/stpbt
     chmod 0660 /dev/stpbt
 
+    # Setup disk-based swap (512MB)
+    exec_start setup_swap
+
+service setup_swap /system/bin/sh -c "if [ ! -f /data/swapfile ]; then dd if=/dev/zero of=/data/swapfile bs=1M count=512 && chmod 600 /data/swapfile && mkswap /data/swapfile; fi && swapon /data/swapfile"
+    user root
+    group root
+    disabled
+    oneshot
+
 service nvram_daemon /vendor/bin/nvram_daemon
     class main
     user root
