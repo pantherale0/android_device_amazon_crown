@@ -27,14 +27,16 @@ jobs:
       
       - name: Check makefile syntax
         run: |
-          echo "Checking for syntax errors in makefiles..."
+          echo "Checking makefiles for basic issues..."
           find . -name "*.mk" -type f | while read file; do
-            echo "Checking $file"
-            # Basic syntax check
-            if grep -q "^[[:space:]]*\t" "$file"; then
-              echo "Warning: $file may contain leading tabs instead of spaces"
+            echo "✓ Checking $file"
+            # Check for common syntax issues (basic validation)
+            if [ ! -s "$file" ]; then
+              echo "ERROR: $file is empty"
+              exit 1
             fi
           done
+          echo "All makefiles passed basic validation"
       
       - name: Validate XML files
         run: |

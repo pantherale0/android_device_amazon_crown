@@ -16,18 +16,24 @@ This device tree depends on the following repositories:
 1. **mt8163-common device tree** (Apache-2.0)
    - Repository: https://github.com/amazon-oss/android_device_amazon_mt8163-common
    - Path: `device/amazon/mt8163-common`
+   - Branch: `main`
 
 2. **Kernel source** (GPL-2.0)
    - Repository: https://github.com/amazon-oss/android_kernel_amazon_mt8163
    - Path: `kernel/amazon/mt8163`
+   - Branch: `master`
 
 3. **WiFi driver source** (Dual BSD / GPL-2.0)
    - Repository: https://github.com/amazon-oss/android_kernel_amazon_mt76x8-wifi
    - Path: `hardware/amazon/mt76x8-wifi`
+   - Branch: `master`
 
 4. **Bluetooth driver source** (Dual BSD / GPL-2.0)
    - Repository: https://github.com/amazon-oss/android_kernel_amazon_mt76x8-bt
    - Path: `hardware/amazon/mt76x8-bt`
+   - Branch: `master`
+
+**Note**: Branch names vary across repositories (`main` vs `master`) as they reflect the default branches used by the upstream Amazon OSS repositories.
 
 ## Building with LineageOS Build System
 

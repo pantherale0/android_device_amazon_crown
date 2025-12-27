@@ -2,6 +2,14 @@
 # SPDX-FileCopyrightText: 2025 The LineageOS Project
 # SPDX-License-Identifier: Apache-2.0
 #
+# This workflow builds LineageOS for the Amazon Echo Show 8 (crown) device.
+# It uses the lineageos4microg Docker image which provides a pre-configured
+# build environment with all necessary tools and dependencies.
+#
+# Note: For production use, consider:
+# - Using self-hosted runners with adequate resources (16GB+ RAM, 250GB+ disk)
+# - Building your own Docker image for better control and security
+# - Adjusting LINEAGE_VERSION for different Android versions
 
 name: Build Android
 
@@ -20,6 +28,7 @@ env:
   DEVICE: crown
   VENDOR: amazon
   LINEAGE_BUILD_TYPE: UNOFFICIAL
+  LINEAGE_VERSION: lineage-19.1
   CCACHE_SIZE: 50G
   CCACHE_DIR: /mnt/ccache
 
@@ -61,7 +70,7 @@ jobs:
         run: |
           mkdir -p /root/android/lineage
           cd /root/android/lineage
-          repo init -u https://github.com/LineageOS/android.git -b lineage-19.1 --git-lfs --depth=1
+          repo init -u https://github.com/LineageOS/android.git -b ${{ env.LINEAGE_VERSION }} --git-lfs --depth=1
       
       - name: Sync repo (minimal)
         run: |
