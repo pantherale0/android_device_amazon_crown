@@ -1,10 +1,10 @@
 # Snapclient Binary
 
-This directory contains the Snapcast client binary for Android.
+**IMPORTANT:** This directory requires the `libsnapclient.so` binary file to be present before building. The build will fail if this file is missing.
 
 ## Required File
 
-You need to place the `libsnapclient.so` binary file in this directory before building.
+You **must** place the `libsnapclient.so` binary file in this directory before building the ROM.
 
 ### Building from source
 

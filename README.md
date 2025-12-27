@@ -13,7 +13,11 @@ This device tree includes integration for the Snapcast audio client, which enabl
 
 ### Setup
 
+**Before building**, you must:
+
 1. Place the `libsnapclient.so` binary (compiled for Android ARM 32-bit) in the `snapclient/` directory
+   - See `snapclient/README.md` for detailed instructions on obtaining the binary
+   - The build will fail if this file is missing
 2. Configure the Snapcast server host and port in `vendor.prop`:
    - `persist.snapcast.host` - Server IP address (default: 10.10.50.12)
    - `persist.snapcast.port` - Server port (default: 1704)
