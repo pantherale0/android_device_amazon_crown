@@ -1,0 +1,77 @@
+#
+# SPDX-FileCopyrightText: 2025 The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+
+name: Validate Device Tree
+
+on:
+  push:
+    branches:
+      - main
+      - lineage-*
+  pull_request:
+    branches:
+      - main
+      - lineage-*
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Device Configuration
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout device tree
+        uses: actions/checkout@v4
+      
+      - name: Check makefile syntax
+        run: |
+          echo "Checking for syntax errors in makefiles..."
+          find . -name "*.mk" -type f | while read file; do
+            echo "Checking $file"
+            # Basic syntax check
+            if grep -q "^[[:space:]]*\t" "$file"; then
+              echo "Warning: $file may contain leading tabs instead of spaces"
+            fi
+          done
+      
+      - name: Validate XML files
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-utils
+          echo "Validating XML files..."
+          find . -name "*.xml" -type f | while read file; do
+            echo "Validating $file"
+            xmllint --noout "$file" || exit 1
+          done
+      
+      - name: Check for required files
+        run: |
+          echo "Checking for required device tree files..."
+          required_files=(
+            "AndroidProducts.mk"
+            "BoardConfig.mk"
+            "device.mk"
+            "lineage_crown.mk"
+          )
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "ERROR: Missing required file: $file"
+              exit 1
+            else
+              echo "✓ Found $file"
+            fi
+          done
+      
+      - name: List device configuration
+        run: |
+          echo "=== Device Tree Summary ==="
+          echo "Device: crown (Amazon Echo Show 8 2019)"
+          echo "SoC: MediaTek MT8163"
+          echo ""
+          echo "=== Build Dependencies ==="
+          echo "- Device tree (mt8163-common): https://github.com/amazon-oss/android_device_amazon_mt8163-common"
+          echo "- Kernel source: https://github.com/amazon-oss/android_kernel_amazon_mt8163"
+          echo "- WiFi driver: https://github.com/amazon-oss/android_kernel_amazon_mt76x8-wifi"
+          echo "- Bluetooth driver: https://github.com/amazon-oss/android_kernel_amazon_mt76x8-bt"

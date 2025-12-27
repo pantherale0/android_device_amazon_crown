@@ -1,0 +1,22 @@
+[
+  {
+    "repository": "amazon-oss/android_device_amazon_mt8163-common",
+    "target_path": "device/amazon/mt8163-common",
+    "branch": "main"
+  },
+  {
+    "repository": "amazon-oss/android_kernel_amazon_mt8163",
+    "target_path": "kernel/amazon/mt8163",
+    "branch": "master"
+  },
+  {
+    "repository": "amazon-oss/android_kernel_amazon_mt76x8-wifi",
+    "target_path": "hardware/amazon/mt76x8-wifi",
+    "branch": "master"
+  },
+  {
+    "repository": "amazon-oss/android_kernel_amazon_mt76x8-bt",
+    "target_path": "hardware/amazon/mt76x8-bt",
+    "branch": "master"
+  }
+]

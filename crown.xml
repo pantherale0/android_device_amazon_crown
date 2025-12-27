@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    SPDX-FileCopyrightText: 2025 The LineageOS Project
+    SPDX-License-Identifier: Apache-2.0
+    
+    Local manifest for building LineageOS for Amazon Echo Show 8 (crown)
+    
+    Usage:
+    1. Create directory: mkdir -p .repo/local_manifests
+    2. Copy this file to: .repo/local_manifests/crown.xml
+    3. Run: repo sync
+-->
+<manifest>
+  <!-- Device tree for crown -->
+  <project name="pantherale0/android_device_amazon_crown" 
+           path="device/amazon/crown" 
+           remote="github" 
+           revision="main" />
+  
+  <!-- Common device tree for mt8163 -->
+  <project name="amazon-oss/android_device_amazon_mt8163-common" 
+           path="device/amazon/mt8163-common" 
+           remote="github" 
+           revision="main" />
+  
+  <!-- Kernel source -->
+  <project name="amazon-oss/android_kernel_amazon_mt8163" 
+           path="kernel/amazon/mt8163" 
+           remote="github" 
+           revision="master" />
+  
+  <!-- WiFi driver source -->
+  <project name="amazon-oss/android_kernel_amazon_mt76x8-wifi" 
+           path="hardware/amazon/mt76x8-wifi" 
+           remote="github" 
+           revision="master" />
+  
+  <!-- Bluetooth driver source -->
+  <project name="amazon-oss/android_kernel_amazon_mt76x8-bt" 
+           path="hardware/amazon/mt76x8-bt" 
+           remote="github" 
+           revision="master" />
+</manifest>

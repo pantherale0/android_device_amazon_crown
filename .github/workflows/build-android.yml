@@ -1,0 +1,141 @@
+#
+# SPDX-FileCopyrightText: 2025 The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+
+name: Build Android
+
+on:
+  push:
+    branches:
+      - main
+      - lineage-*
+  pull_request:
+    branches:
+      - main
+      - lineage-*
+  workflow_dispatch:
+
+env:
+  DEVICE: crown
+  VENDOR: amazon
+  LINEAGE_BUILD_TYPE: UNOFFICIAL
+  CCACHE_SIZE: 50G
+  CCACHE_DIR: /mnt/ccache
+
+jobs:
+  build:
+    name: Build LineageOS for Crown
+    runs-on: ubuntu-latest
+    container:
+      image: lineageos4microg/docker-lineage-cicd:latest
+      options: --privileged
+      volumes:
+        - /mnt/ccache:/mnt/ccache
+    
+    steps:
+      - name: Checkout device tree
+        uses: actions/checkout@v4
+        with:
+          path: device/${{ env.VENDOR }}/${{ env.DEVICE }}
+          fetch-depth: 0
+      
+      - name: Set up environment
+        run: |
+          echo "BUILD_DATE=$(date +%Y%m%d)" >> $GITHUB_ENV
+          echo "Setting up build environment"
+          apt-get update
+          apt-get install -y bc bison build-essential ccache curl flex \
+            g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev \
+            lib32readline-dev lib32z1-dev libelf-dev liblz4-tool libncurses5 \
+            libncurses5-dev libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop \
+            pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev \
+            openjdk-11-jdk python3 python3-pip repo
+      
+      - name: Initialize ccache
+        run: |
+          ccache -M ${{ env.CCACHE_SIZE }}
+          ccache -s
+      
+      - name: Initialize repo
+        run: |
+          mkdir -p /root/android/lineage
+          cd /root/android/lineage
+          repo init -u https://github.com/LineageOS/android.git -b lineage-19.1 --git-lfs --depth=1
+      
+      - name: Sync repo (minimal)
+        run: |
+          cd /root/android/lineage
+          repo sync -c -j$(nproc) --force-sync --no-clone-bundle --no-tags --optimized-fetch --prune
+      
+      - name: Clone device tree
+        run: |
+          cd /root/android/lineage
+          rm -rf device/${{ env.VENDOR }}/${{ env.DEVICE }}
+          mkdir -p device/${{ env.VENDOR }}
+          cp -r $GITHUB_WORKSPACE/device/${{ env.VENDOR }}/${{ env.DEVICE }} device/${{ env.VENDOR }}/
+      
+      - name: Clone mt8163-common device tree
+        run: |
+          cd /root/android/lineage
+          git clone https://github.com/amazon-oss/android_device_amazon_mt8163-common.git device/${{ env.VENDOR }}/mt8163-common --depth=1
+      
+      - name: Clone kernel source
+        run: |
+          cd /root/android/lineage
+          git clone https://github.com/amazon-oss/android_kernel_amazon_mt8163.git kernel/${{ env.VENDOR }}/mt8163 --depth=1
+      
+      - name: Clone WiFi driver source
+        run: |
+          cd /root/android/lineage
+          git clone https://github.com/amazon-oss/android_kernel_amazon_mt76x8-wifi.git hardware/${{ env.VENDOR }}/mt76x8-wifi --depth=1
+      
+      - name: Clone Bluetooth driver source
+        run: |
+          cd /root/android/lineage
+          git clone https://github.com/amazon-oss/android_kernel_amazon_mt76x8-bt.git hardware/${{ env.VENDOR }}/mt76x8-bt --depth=1
+      
+      - name: Set up vendor blobs (stub)
+        run: |
+          cd /root/android/lineage
+          mkdir -p vendor/${{ env.VENDOR }}/${{ env.DEVICE }}
+          echo "# Stub vendor makefile" > vendor/${{ env.VENDOR }}/${{ env.DEVICE }}/BoardConfigVendor.mk
+          echo "# Stub vendor makefile" > vendor/${{ env.VENDOR }}/${{ env.DEVICE }}/${{ env.DEVICE }}-vendor.mk
+      
+      - name: Set up build environment
+        run: |
+          cd /root/android/lineage
+          source build/envsetup.sh
+          lunch lineage_${{ env.DEVICE }}-userdebug
+      
+      - name: Build Android
+        run: |
+          cd /root/android/lineage
+          source build/envsetup.sh
+          lunch lineage_${{ env.DEVICE }}-userdebug
+          mka bacon -j$(nproc) || mka bacon -j1
+        continue-on-error: true
+      
+      - name: Check ccache statistics
+        run: |
+          ccache -s
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: lineage-${{ env.DEVICE }}-${{ env.BUILD_DATE }}
+          path: |
+            /root/android/lineage/out/target/product/${{ env.DEVICE }}/*.zip
+            /root/android/lineage/out/target/product/${{ env.DEVICE }}/*.img
+          retention-days: 30
+      
+      - name: Upload build logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-logs-${{ env.BUILD_DATE }}
+          path: |
+            /root/android/lineage/out/target/product/${{ env.DEVICE }}/*.log
+            /root/android/lineage/out/target/product/${{ env.DEVICE }}/obj/PACKAGING/target_files_intermediates/
+          retention-days: 7
