@@ -70,6 +70,12 @@ PRODUCT_SHIPPING_API_LEVEL := 25
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH)
 
+# Snapcast client
+PRODUCT_PACKAGES += \
+    libsnapclient.so \
+    snapclient \
+    init.snapclient.rc
+
 # Suspend blocker
 PRODUCT_PACKAGES += \
     suspend_blocker_mt8163

@@ -11,5 +11,9 @@ ro.vendor.rfkilldisabled=1
 # Sensors
 ro.hardware.sensors=amazon
 
+# Snapcast
+persist.snapcast.host=10.10.50.12
+persist.snapcast.port=1704
+
 # Wi-Fi
 wifi.interface=wlan0

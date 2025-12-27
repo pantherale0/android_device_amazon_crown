@@ -1,0 +1,28 @@
+//
+// SPDX-FileCopyrightText: 2025 The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+cc_prebuilt_binary {
+    name: "libsnapclient.so",
+    strip: {
+        none: true,
+    },
+    srcs: ["libsnapclient.so"],
+    compile_multilib: "32",
+    vendor: true,
+}
+
+sh_binary {
+    name: "snapclient",
+    src: "snapclient.sh",
+    vendor: true,
+    required: ["libsnapclient.so"],
+}
+
+prebuilt_etc {
+    name: "init.snapclient.rc",
+    src: "init.snapclient.rc",
+    sub_dir: "init",
+    vendor: true,
+}

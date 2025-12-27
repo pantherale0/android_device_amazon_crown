@@ -1,0 +1,9 @@
+# Snapcast client service
+service snapclient /vendor/bin/snapclient
+    class late_start
+    user system
+    group audio inet net_raw
+
+# Start snapclient when boot is completed
+on property:sys.boot_completed=1
+    start snapclient
