@@ -16,3 +16,26 @@ wifi.interface=wlan0
 
 # Zram/Swap
 ro.zram.size_mb=512
+
+# Low RAM Optimization
+ro.config.low_ram=true
+
+# Optimizations
+dalvik.vm.heapstartsize=8m
+dalvik.vm.heapgrowthlimit=64m
+dalvik.vm.heapsize=128m
+dalvik.vm.heaptargetutilization=0.75
+dalvik.vm.heapminfree=512k
+dalvik.vm.heapmaxfree=8m
+
+# lmkd
+ro.lmk.use_minfree_levels=true
+ro.lmk.low=1001
+ro.lmk.medium=800
+ro.lmk.critical=0
+ro.lmk.thrashing_limit=30
+ro.lmk.thrashing_limit_decay=50
+
+# graphics
+debug.sf.disable_backpressure=1
+ro.config.max_starting_bg=2
