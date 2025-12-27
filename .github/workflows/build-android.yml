@@ -24,6 +24,9 @@ on:
       - lineage-*
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   DEVICE: crown
   VENDOR: amazon

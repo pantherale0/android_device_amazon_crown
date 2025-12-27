@@ -16,6 +16,9 @@ on:
       - lineage-*
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     name: Validate Device Configuration
