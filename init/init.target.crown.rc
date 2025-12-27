@@ -31,7 +31,7 @@ on boot
     # Setup disk-based swap (512MB)
     exec_start setup_swap
 
-service setup_swap /system/bin/sh -c "if [ ! -f /data/swapfile ]; then dd if=/dev/zero of=/data/swapfile bs=1M count=512 && chmod 600 /data/swapfile && mkswap /data/swapfile && swapon /data/swapfile; elif [ -f /data/swapfile ]; then swapon /data/swapfile; fi"
+service setup_swap /system/bin/sh -c "if [ ! -f /data/swapfile ]; then dd if=/dev/zero of=/data/swapfile bs=1M count=512 && chmod 600 /data/swapfile && mkswap /data/swapfile && swapon /data/swapfile; else swapon /data/swapfile; fi"
     user root
     group root
     disabled
